@@ -35,6 +35,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> searchTask(String name, Long assigneeId) {
+        System.out.println("Name from service impl: "+name+" Assignee Id service impl: "+assigneeId );
         return taskRepo.findByNameAndAssignee(name != null ? name : "", assigneeId);
     }
 

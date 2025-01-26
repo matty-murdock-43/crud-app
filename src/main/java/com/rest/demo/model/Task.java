@@ -33,7 +33,14 @@ public class Task {
     @ManyToOne
     private Worker assignee;
 
-
+    public Task(String name, String description, TaskStatus taskStatus, LocalDate dueDate, Campaign campaign, Worker assignee) {
+        this.name = name;
+        this.description = description;
+        this.taskStatus = taskStatus;
+        this.dueDate = dueDate;
+        this.campaign = campaign;
+        this.assignee = assignee;
+    }
 
     public Task(String uuid, String name, String description, TaskStatus taskStatus, LocalDate dueDate, Campaign campaign, Worker assignee) {
         this.uuid = uuid;

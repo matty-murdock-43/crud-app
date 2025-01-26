@@ -1,8 +1,8 @@
 package com.rest.demo.controller;
 
+import com.rest.demo.dto.SearchTask;
 import com.rest.demo.dto.TaskDto;
 import com.rest.demo.dto.WorkerDto;
-import com.rest.demo.model.Worker;
 import com.rest.demo.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,17 +19,17 @@ public class TaskController {
     @Autowired
     TaskService taskService;
 
-//    @GetMapping(value = "/allTasks")
-//    public List<TaskDto> tasks() {
-//        List<Task> tasks = taskService.getAllTasks();
-////        List<TaskDto> tasksDto = new ArrayList<>();
-////        for (Task task : tasks) {
-////            TaskDto taskDto = TaskDto.Mapper.toDto(task);
-////            tasksDto.add(taskDto);
-////        }
-//        List<TaskDto> tasksDto = tasks.stream().map(TaskDto.Mapper::toDto).collect(Collectors.toList());
-//        return tasksDto;
-//    }
+    @GetMapping(value = "/allTasks")
+    public List<TaskDto> tasks() {
+        List<Task> tasks = taskService.getAllTasks();
+//        List<TaskDto> tasksDto = new ArrayList<>();
+//        for (Task task : tasks) {
+//            TaskDto taskDto = TaskDto.Mapper.toDto(task);
+//            tasksDto.add(taskDto);
+//        }
+        List<TaskDto> tasksDto = tasks.stream().map(TaskDto.Mapper::toDto).collect(Collectors.toList());
+        return tasksDto;
+    }
 
     @GetMapping(value = "/{id}")
     public TaskDto findOne(@PathVariable Long id){
@@ -38,8 +38,10 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<TaskDto> searchTasks(@RequestBody(required = false) String name, @RequestBody(required = false) Long assigneeId) {
-        List<Task> tasks = taskService.searchTask(name, assigneeId);
+    public List<TaskDto> searchTasks(@RequestBody SearchTask searchTask) {
+        List<Task> tasks = taskService.searchTask(searchTask.name(), searchTask.assigneeId());
+        //System.out.println("Name from controller: "+name+"Assignee Id from controller: "+assignee );
+
         List<TaskDto> tasksDto = tasks.stream().map(TaskDto.Mapper::toDto).collect(Collectors.toList());
         return tasksDto;
     }
@@ -69,8 +71,8 @@ public class TaskController {
     @PutMapping(value = "/{id}/assignee")
     public TaskDto updateAssignee(@PathVariable Long id, @RequestBody TaskDto updatedTask){
 //        Task task = TaskDto.Mapper.toModel(updatedTask);
-//        Task updateAssignee = taskService.updateTaskAssignee(id, updatedTask.workerDto());
-        Task updateAssignee = taskService.updateTaskAssignee(id, WorkerDto.Mapper.toModel(updatedTask.workerDto())).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND));
+//        Task updateAssignee = taskService.updateTaskAssignee(id, updatedTask.assignee());
+        Task updateAssignee = taskService.updateTaskAssignee(id, WorkerDto.Mapper.toModel(updatedTask.assignee())).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND));
         return TaskDto.Mapper.toDto(updateAssignee);
     }
 }

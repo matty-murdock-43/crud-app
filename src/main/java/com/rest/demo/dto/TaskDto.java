@@ -4,12 +4,11 @@ package com.rest.demo.dto;
 import com.rest.demo.model.Campaign;
 import com.rest.demo.model.Task;
 import com.rest.demo.model.TaskStatus;
-import com.rest.demo.model.Worker;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
-public record TaskDto(Long id, String uuid, String name, String description, LocalDate dueDate, Long campaignId, WorkerDto workerDto, TaskStatus taskStatus) {
+public record TaskDto(Long id, String uuid, String name, String description, LocalDate dueDate, Long campaignId, WorkerDto assignee, TaskStatus taskStatus) {
     public static class Mapper{
         public static Task toModel(TaskDto taskDto){
             if(taskDto == null) return null;
@@ -17,7 +16,7 @@ public record TaskDto(Long id, String uuid, String name, String description, Loc
             Campaign campaign = new Campaign();
             campaign.setId(taskDto.campaignId());
 
-            Task model = new Task(taskDto.uuid(), taskDto.name(), taskDto.description(), taskDto.taskStatus(), taskDto.dueDate(), campaign, WorkerDto.Mapper.toModel(taskDto.workerDto()));
+            Task model = new Task(taskDto.name(), taskDto.description(), taskDto.taskStatus(), taskDto.dueDate(), campaign, WorkerDto.Mapper.toModel(taskDto.assignee()));
             if(!Objects.isNull(taskDto.id())){
                 model.setId(taskDto.id());
             }
